@@ -1,6 +1,6 @@
 /*
 made by SioN.
-edit: 10/2/22
+edit: 11/2/22
 siontea.com
 */
 
@@ -24,6 +24,7 @@ state("mission117") {
 	*/
 	int level : 0x000AC9AC, 0x268, 0x1C8;
 	
+	//achivements
 	//0 = not gotten
 	//44 = gotten
 	int ach1 : 0x000AC9AC, 0x268, 0x1D8; //bomb
@@ -41,6 +42,13 @@ startup {
 	Action<string> Debug = (text) => { print("[mission117] " + text); };
 	vars.Debug = Debug;
 	vars.Debug("Initialized!");
+	
+	settings.Add("aa", true, "All Achievements");
+	settings.SetToolTip("aa", "Splits in order:\neasy cat\nhard cat\nhard cards\nenter final level\neasy cards\ndeath on bomb");
+	settings.Add("cat", false, "Cat");
+	settings.SetToolTip("cat", "Splits after every room");
+	settings.Add("card", false, "Card");
+	settings.SetToolTip("card", "Splits after every room");
 }
 
 init {
@@ -59,41 +67,49 @@ start {
 }
 
 split {
-	if (vars.cat1 == 0 && current.ach4 == 44) {
-		vars.cat1++;
-		vars.Debug("cat1");
-		return true;
+	if (settings["aa"]) {
+		if (vars.cat1 == 0 && current.ach4 == 44) {
+			vars.cat1++;
+			vars.Debug("cat1");
+			return true;
+		}
+		else if (vars.cat2 == 0 && current.ach5 == 44) {
+			vars.cat2++;
+			vars.Debug("cat2");
+			return true;
+		}
+		else if (vars.card2 == 0 && current.ach7 == 44) {
+			vars.card2++;
+			vars.Debug("card2");
+			return true;
+		}
+		else if (old.level == 446 && current.level == 449 && vars.card2 == 1) {
+			vars.Debug("cat1 2");
+			return true;
+		}
+		else if (vars.card1 == 0 && current.ach6 == 44) {
+			vars.card1++;
+			vars.Debug("card1");
+			return true;
+		}
+		else if (vars.bomb == 0 && current.ach1 == 44) {
+			vars.bomb++;
+			vars.Debug("bomb");
+			return true;
+		} else {
+			return false;
+		}
+	} 
+	else if (settings["cat"] || settings["card"]) {
+		if (old.level < current.level && current.level != 4499 && current.level != 441 && current.level != 447) {
+			return true;
+		} else {
+			return false;
+		}
 	}
-	else if (vars.cat2 == 0 && current.ach5 == 44) {
-		vars.cat2++;
-		vars.Debug("cat2");
-		return true;
-	}
-	else if (vars.card2 == 0 && current.ach7 == 44) {
-		vars.card2++;
-		vars.Debug("card2");
-		return true;
-	}
-	else if (old.level == 446 && current.level == 449 && vars.card2 == 1) {
-		vars.Debug("cat1 2");
-		return true;
-	}
-	else if (vars.card1 == 0 && current.ach6 == 44) {
-		vars.card1++;
-		vars.Debug("card1");
-		return true;
-	}
-	else if (vars.bomb == 0 && current.ach1 == 44) {
-		vars.bomb++;
-		vars.Debug("bomb");
-		return true;
-	} else {
+	else {
 		return false;
 	}
-	/* split after each level
-	if (old.level < current.level && current.level != 4499 && current.level != 441) {
-		return true;
-	}*/
 }
 
 reset {
