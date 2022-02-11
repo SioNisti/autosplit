@@ -51,15 +51,8 @@ startup {
 	settings.SetToolTip("card", "Splits after every room");
 }
 
-init {
-	vars.cat1 = 0;
-	vars.cat2 = 0;
-	vars.card2 = 0;
-	vars.card1 = 0;
-	vars.bomb = 0;
-}
- 
 start {
+	//change to 4499 and 440 if you want to start the time on clicking a difficulty instead of loading in
 	if (old.level == 440 && current.level == 441) {
 		vars.Debug("start!");
 		return true;
@@ -68,32 +61,27 @@ start {
 
 split {
 	if (settings["aa"]) {
-		if (vars.cat1 == 0 && current.ach4 == 44) {
-			vars.cat1++;
+		if (old.ach4 == 0 && current.ach4 == 44) {
 			vars.Debug("cat1");
 			return true;
 		}
-		else if (vars.cat2 == 0 && current.ach5 == 44) {
-			vars.cat2++;
+		else if (old.ach5 == 0 && current.ach5 == 44) {
 			vars.Debug("cat2");
 			return true;
 		}
-		else if (vars.card2 == 0 && current.ach7 == 44) {
-			vars.card2++;
+		else if (old.ach7 == 0 && current.ach7 == 44) {
 			vars.Debug("card2");
 			return true;
 		}
-		else if (old.level == 446 && current.level == 449 && vars.card2 == 1) {
+		else if (old.level == 446 && current.level == 449 && current.ach7 == 44) {
 			vars.Debug("cat1 2");
 			return true;
 		}
-		else if (vars.card1 == 0 && current.ach6 == 44) {
-			vars.card1++;
+		else if (old.ach6 == 0 && current.ach6 == 44) {
 			vars.Debug("card1");
 			return true;
 		}
-		else if (vars.bomb == 0 && current.ach1 == 44) {
-			vars.bomb++;
+		else if (old.ach1 == 0 && current.ach1 == 44) {
 			vars.Debug("bomb");
 			return true;
 		} else {
@@ -116,14 +104,6 @@ reset {
 	if (old.level == 4499 && current.level == 4499) {
 		return true;
 	}
-}
-
-onReset {
-	vars.cat1 = 0;
-	vars.cat2 = 0;
-	vars.card2 = 0;
-	vars.card1 = 0;
-	vars.bomb = 0;
 }
 
 exit {
