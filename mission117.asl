@@ -2,6 +2,10 @@
 made by SioN.
 edit: 11/2/22
 siontea.com
+
+Note:
+That this only works for 1.1.7 since in this update I added the level and achievement values in the game code solely for this autosplitter.
+Versions 1.0 to 1.1.6 don't have these values in the code.
 */
 
 state("mission117") {
