@@ -11,7 +11,7 @@ startup
 	vars.Log = (Action<object>)(output => print("[d86] " + output));
 	vars.Unity = Activator.CreateInstance(Assembly.LoadFrom(@"Components\UnityASL.bin").GetType("UnityASL.Unity"));
 	
-	settings.Add("laps", false, "Lap Splits");
+	settings.Add("laps", false, "Lap Splits for timetrials");
 }
 
 init 
@@ -42,12 +42,16 @@ update
 }
 
 start {
-	if (vars.Unity["gameStart"].Current == true && vars.Unity["gameStart"].Old == false && vars.Unity["gameEnd"].Old == false) {
+	if (vars.Unity["gameStart"].Current == true && vars.Unity["gameStart"].Old == false && vars.Unity["gameEnd"].Old == false) {	
+		vars.tt = 0.0f;
 		return true;
 	}
 }
 
 gameTime{	
+	if (settings["laps"]) {
+		return TimeSpan.FromSeconds(vars.Unity["raceTime"].Current);
+	}
 	if (vars.Unity["gameEnd"].Current == true && vars.Unity["gameEnd"].Old == false) {
 		vars.tt += vars.Unity["raceTime"].Current;
 		return TimeSpan.FromSeconds(vars.tt);
@@ -58,7 +62,22 @@ split {
 	if (vars.Unity["gameEnd"].Current == true && vars.Unity["gameEnd"].Old == false) {
 		return true;
 	}
+	
+	if (settings["laps"]) {
+		if (vars.Unity["currentLap"].Current > vars.Unity["currentLap"].Old ) {
+			return true;
+		}
+	}
 }
+
+reset {
+	if (settings["laps"]) {
+		if (vars.Unity["currentLap"].Current == 1 && vars.Unity["gameStart"].Current == false && vars.Unity["gameStart"].Old == false) {
+			return true;
+		}
+	}
+}
+
 
 isLoading {
 	return true;
